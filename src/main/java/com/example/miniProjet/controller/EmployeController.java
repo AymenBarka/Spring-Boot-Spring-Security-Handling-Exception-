@@ -28,10 +28,7 @@ public class EmployeController {
 	MissionService missionService;
 	@Autowired
 	DepartementService departementService;
-@PostMapping("/addEmploye")
-	public void addEmploye(@RequestBody Employe em) {
-		employeService.addEmploye(em);
-	}
+
 
 @PutMapping("/updateEmploye/{id}")
 	public Employe updateEmploye(@RequestBody Employe em, @PathVariable (value="id") int id) {

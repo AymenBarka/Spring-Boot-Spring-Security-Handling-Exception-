@@ -14,6 +14,7 @@ public interface EmployeService {
 	public List<Employe> getAllEmploye();
 	public void affectEmpToDept(int idEmp, int idDept);
 	public void affectEmpToMiss(int idEmp, int idMiss);
+	public Employe findByUsername(String username);
 
 
 

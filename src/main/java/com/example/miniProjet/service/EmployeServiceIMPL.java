@@ -1,23 +1,36 @@
 package com.example.miniProjet.service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.miniProjet.entities.Departement;
 import com.example.miniProjet.entities.Employe;
 import com.example.miniProjet.entities.Mission;
+import com.example.miniProjet.entities.Role;
 import com.example.miniProjet.repositeries.DepartementRepository;
 import com.example.miniProjet.repositeries.EmployeRepository;
 import com.example.miniProjet.repositeries.MissionRepository;
 
-@Service
+
+
+@Service(value="employeService")
 @Transactional
 
-public class EmployeServiceIMPL implements EmployeService{
+public class EmployeServiceIMPL implements EmployeService, UserDetailsService{
+	@Autowired
+	private BCryptPasswordEncoder bcryptEncoder;
 	@Autowired
 	EmployeRepository employeRepository;
 	@Autowired
@@ -25,9 +38,11 @@ public class EmployeServiceIMPL implements EmployeService{
 	@Autowired 
 	MissionRepository missionRepository;
 	
+	
 
 	@Override
 	public void addEmploye(Employe em) {
+		em.setPassword(bcryptEncoder.encode(em.getPassword()));
      employeRepository.save(em)	;	
 	}
 
@@ -59,7 +74,10 @@ public class EmployeServiceIMPL implements EmployeService{
 
 	@Override
 	public List<Employe> getAllEmploye() {
-		return employeRepository.findAll();
+		List<Employe>list = new ArrayList<>();
+		
+		 employeRepository.findAll().iterator().forEachRemaining(list::add);
+		 return list;
 	}
 
 	@Override
@@ -90,5 +108,28 @@ public class EmployeServiceIMPL implements EmployeService{
 		employeRepository.save(empl);		
 		
 	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		Employe em = employeRepository.findByUsername(username);
+		if(em == null){
+			throw new UsernameNotFoundException("Invalid username or password.");
+		}
+		return new org.springframework.security.core.userdetails.User(em.getUsername(), em.getPassword(), getAuthority(em));
+	}
+	private Set<SimpleGrantedAuthority> getAuthority(Employe em) {
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+		Role role = em.getRole();
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+		return authorities;
+	}
+
+	@Override
+	public Employe findByUsername(String username) {
+		Employe em = employeRepository.findByUsername(username);
+		return em;
+	}
+
+	
 
 }
