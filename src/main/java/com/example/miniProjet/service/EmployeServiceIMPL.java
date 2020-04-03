@@ -37,7 +37,7 @@ public class EmployeServiceIMPL implements EmployeService, UserDetailsService{
 	DepartementRepository departementRepository;
 	@Autowired 
 	MissionRepository missionRepository;
-	
+		
 	
 
 	@Override
@@ -69,11 +69,12 @@ public class EmployeServiceIMPL implements EmployeService, UserDetailsService{
 
 	@Override
 	public Employe getEmploye(int em) {
+		
 		return employeRepository.findById(em).get();
 	}
 
 	@Override
-	public List<Employe> getAllEmploye() {
+	public List<Employe> getAllEmploye()  {
 		List<Employe>list = new ArrayList<>();
 		
 		 employeRepository.findAll().iterator().forEachRemaining(list::add);
@@ -129,7 +130,6 @@ public class EmployeServiceIMPL implements EmployeService, UserDetailsService{
 		Employe em = employeRepository.findByUsername(username);
 		return em;
 	}
-
 	
 
 }

@@ -3,14 +3,16 @@ package com.example.miniProjet.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.miniProjet.entities.Employe;
@@ -39,12 +41,12 @@ public class EmployeController {
 		return employeService.deleteEmploye(em);
 	}
 @GetMapping("/getEmploye/{id}")
-	public Employe getEmploye(@PathVariable (value = "id") int em) {
-		return employeService.getEmploye(em);
+	public @ResponseBody ResponseEntity< Employe> getEmploye(@PathVariable (value = "id") int em)  {
+		return new ResponseEntity< Employe>  (employeService.getEmploye(em),HttpStatus.OK);
 	}
 @GetMapping("/getEmploye")
-	public List<Employe> getAllEmploye() {
-		return employeService.getAllEmploye();
+	public @ResponseBody ResponseEntity< List<Employe>> getAllEmploye() {
+		return new ResponseEntity< List<Employe>>  (employeService.getAllEmploye(),HttpStatus.OK);
 	}
 @GetMapping("/affectEmployeToDepartement/{idEmp}/{idDept}")
 	public void affectEmpToDept(@PathVariable (value="idEmp" ) int idEmp, @PathVariable (value="idDept") int idDept) {
